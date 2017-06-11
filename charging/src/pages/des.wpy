@@ -1,0 +1,16 @@
+<style></style>
+<template>
+  <view>
+  <textarea>this page is des.</textarea>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Des extends wepy.page {
+    config = {
+      navigationBarTitleText: '说明'
+    }
+  }
+</script>

@@ -16,7 +16,11 @@ import 'wepy-async-function'
 export default class extends wepy.app {
   config = {
     pages: [
-      'pages/index'
+      'pages/index',
+      'pages/codePage',
+      'pages/des',
+      'pages/orders',
+      'pages/chargingDetail'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -33,6 +37,7 @@ export default class extends wepy.app {
   constructor () {
     super()
     this.use('requestfix')
+    this.use('promisify')
   }
 
   onLaunch() {
@@ -53,6 +58,7 @@ export default class extends wepy.app {
   }
 
   getUserInfo(cb) {
+    console.log('in app.wpy getUserInfo')
     const that = this
     if (this.globalData.userInfo) {
       return this.globalData.userInfo

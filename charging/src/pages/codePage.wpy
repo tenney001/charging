@@ -1,0 +1,82 @@
+<style lang="less">
+  @import url(../weui.less);
+
+  .imgbox{
+    text-align: center;
+    padding: 30rpx;
+  }
+  .scancodeimg{
+    width:100rpx;
+    height:100rpx;
+  }
+  .weui-cell::before{
+    left:0;
+  }
+  .placeholder-class{
+    font-size: 14px;
+  }
+</style>
+<template>
+  <view class="imgbox"><image @tap="scanCode" class="scancodeimg" src="../images/scanning.png"></image></view>
+  <view class="weui-cell">
+    <view class="weui-cell__bd">
+      <input
+        class="weui-input" 
+        type="number" 
+        placeholder="请扫描或者输入编码" 
+        placeholder-class="placeholder-class"
+        maxlength="12"
+        value="{{code}}" 
+      />
+    </view>
+    <view class="weui-cell__ft">
+      <button @tap="confirmCode">确定</button>
+    </view>
+    <toast />
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import Toast from 'wepy-com-toast'
+
+  export default class CodePage extends wepy.page {
+    config = {
+      navigationBarTitleText: '扫码页'
+    }
+    components = {
+      toast: Toast
+    }
+    data = {
+      code: ''
+    }
+    methods = {
+      async scanCode() {
+        var self = this
+        wx.scanCode({
+          success: (res) => {
+            console.log(res)
+            if (res.scanType === 'QR_CODE') {
+              self.code = res.result
+              self.$apply()
+            }
+          },
+          fail: () => {
+            let promise = this.$invoke('toast', 'show', {
+              title: '无法识别',
+              img: '../images/cry.png',
+              duration: 3000
+            })
+
+            promise.then((d) => {
+              console.log('toast done')
+            })
+          }
+        })
+      },
+      confirmCode: function () {
+        console.log('确认code.')
+        this.$redirect('/pages/chargingDetail')
+      }
+    }
+  }
+</script>

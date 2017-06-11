@@ -1,235 +1,193 @@
-<style lang="less">
-  .userinfo {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
 
-  .userinfo-avatar {
-    width: 80rpx;
-    height: 80rpx;
-    border-radius: 50%;
-  }
+<style>
+    .map{
+        width: 750rpx;
+        height: 100vh;
+    }
+  .btn{
+    position: absolute;
+    left: 10rpx;
+    bottom: 10rpx;
 
-  .userinfo-nickname {
-    color: #aaa;
   }
 </style>
+
 <template>
-  <view class="container">
-    <view class="userinfo" @tap="handleViewTap">
-      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
-    </view>
+    <map 
+    id="myMap" 
+    class="map" 
+    longitude="{{longitude}}" 
+    latitude="{{latitude}}" 
+    markers="{{markers}}" 
+    show-location="true"
+    circles="{{circles}}"
+    controls="{{controls}}"
+    bindmarkertap="markertap"
+    bindcontroltap="controltap"
+    bindtap="maptap"
+    bindregionchange="regionchange"
+  >
+    
+  </map>
 
-    <panel>
-      <view class="title" slot="title">测试数据绑定</view>
-
-      <text class="info">{{normalTitle}}</text>
-      <text class="info">{{setTimeoutTitle}}</text>
-      <text class="info">{{mixin}}</text>
-      <text class="info">{{mynum}}</text>
-      <text class="info">{{now}}</text>
-      <button @tap="plus('a')" size="mini">  +  </button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">其它测试</view>
-      <button @tap="toast" size="mini">第三方组件</button>
-      <button @tap="communicate" size="mini">组件通信</button>
-      <button @tap="tap" size="mini">混合TAP事件</button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试并发网络请求</view>
-      <view>返回结果: <text>{{netrst}}</text></view>
-      <button @tap="request" size="mini"> 点我发起10个请求 </button>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试组件</view>
-
-      <text class="testcounter">计数组件1: </text>
-      <view class="counterview">
-        <counter1 @index-emit="counterEmit" />
-      </view>
-
-      <text class="testcounter">计数组件2: </text>
-
-      <view class="counterview">
-        <counter2 :num.sync="mynum"></counter2>
-      </view>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试组件Repeat</view>
-      <repeat for="{{groupList}}" index="index" item="item" key="key">
-        <group :grouplist="item" :indexa="index"></group>
-      </repeat>
-    </panel>
-
-    <panel>
-      <view class="title" slot="title">测试列表</view>
-      <list></list>
-    </panel>
-
-    <toast />
-  </view>
+  <button class="btn"></button>
 </template>
 
 <script>
-  import wepy from 'wepy'
-  import List from '../components/list'
-  import Panel from '../components/panel'
-  import Counter from '../components/counter'
-  import Group from '../components/group'
-  import Toast from 'wepy-com-toast'
-  import testMixin from '../mixins/test'
+import wepy from 'wepy'
 
-  export default class Index extends wepy.page {
-    config = {
-      navigationBarTitleText: 'test'
-    }
-    components = {
-      panel: Panel,
-      counter1: Counter,
-      counter2: Counter,
-      list: List,
-      group: Group,
-      toast: Toast
-    }
-
-    mixins = [testMixin]
-
-    data = {
-      mynum: 20,
-      userInfo: {
-        nickName: '加载中...'
+export default class Map extends wepy.page {
+  config = {
+    navigationBarTitleText: '首页'
+  }
+  data = {
+    mapCtx: {},
+    longitude: '',
+    latitude: '',
+    markers: [
+      {
+        id: 1,
+        latitude: '30.572279',
+        longitude: '104.066641',
+        iconPath: '/images/pin-blue.png'
       },
-      normalTitle: '原始标题',
-      setTimeoutTitle: '标题三秒后会被修改',
-      count: 0,
-      netrst: '',
-      groupList: [
-        {
-          id: 1,
-          name: '点击改变',
-          list: [
-            {
-              childid: '1.1',
-              childname: '子项，点我改变'
-            }, {
-              childid: '1.2',
-              childname: '子项，点我改变'
-            }, {
-              childid: '1.3',
-              childname: '子项，点我改变'
-            }
-          ]
+      {
+        id: 2,
+        latitude: '30.573279',
+        longitude: '104.067641',
+        iconPath: '/images/pin-red.png'
+      },
+      {
+        id: 3,
+        latitude: '30.573279',
+        longitude: '104.065641',
+        iconPath: '/images/pin-red.png'
+      },
+      {
+        id: 4,
+        latitude: '30.571279',
+        longitude: '104.076641',
+        iconPath: '/images/pin-red.png'
+      }
+    ],
+    circles: [
+      {
+        latitude: '',
+        longitude: '',
+        radius: 100,
+        color: '#FFFFFFDD',
+        fillColor: '#FFFFFFAA'
+      }
+    ],
+    controls: [
+      {
+        id: 1,
+        position: {
+          left: 20,
+          top: 550,
+          width: 30,
+          height: 30
         },
-        {
-          id: 2,
-          name: '点击改变',
-          list: [
-            {
-              childid: '2.1',
-              childname: '子项，点我改变'
-            }, {
-              childid: '2.2',
-              childname: '子项，点我改变'
-            }, {
-              childid: '2.3',
-              childname: '子项，点我改变'
-            }
-          ]
+        iconPath: '/images/dingwei.png',
+        clickable: true
+      },
+      {
+        id: 2,
+        position: {
+          left: 170,
+          top: 550,
+          width: 30,
+          height: 30
         },
-        {
-          id: 3,
-          name: '点击改变',
-          list: [
-            {
-              childid: '3.1',
-              childname: '子项，点我改变'
-            }
-          ]
-        }
-      ]
-    }
-
-    computed = {
-      now () {
-        return +new Date()
+        iconPath: '/images/scanning.png',
+        clickable: true
+      },
+      {
+        id: 3,
+        position: {
+          left: 320,
+          top: 550,
+          width: 30,
+          height: 30
+        },
+        iconPath: '/images/des.png',
+        clickable: true
+      },
+      {
+        id: 4,
+        position: {
+          left: 320,
+          top: 20,
+          width: 30,
+          height: 30
+        },
+        iconPath: '/images/order.png',
+        clickable: true
       }
-    }
+    ]
+  }
+  async onLoad() {
+    var self = this
+    var res = await self.setMapByLocation()
+    console.log('res:', res)
+    self.$apply()
+    self.mapCtx = wx.createMapContext('myMap')
+    console.log('self.mapCtx:', self.mapCtx)
+  }
 
-    methods = {
-      plus () {
-        this.mynum++
-      },
-      toast () {
-        let promise = this.$invoke('toast', 'show', {
-          title: '自定义标题',
-          img: 'https://raw.githubusercontent.com/kiinlam/wetoast/master/images/star.png'
-        })
+  methods = {
+    markertap (e) {
+      console.log('e:', e)
+    },
+    controltap (e) {
+      var self = this
+      console.log('controltap-e:', e.controlId)
+      switch (e.controlId) {
+        case 1:
+          self.mapCtx.moveToLocation()
+          break
 
-        promise.then((d) => {
-          console.log('toast done')
-        })
-      },
-      tap () {
-        console.log('do noting from ' + this.$name)
-      },
-      communicate () {
-        console.log(this.$name + ' tap')
+        case 2:
+          console.log('in controlId 2.')
+          self.$redirect('/pages/codePage')
+          break
 
-        this.$invoke('counter2', 'minus', 45, 6)
-        this.$invoke('counter1', 'plus', 45, 6)
+        case 3:
+          console.log('in controlId 3.')
+          self.$redirect('/pages/des')
+          break
 
-        this.$broadcast('index-broadcast', 1, 3, 4)
-      },
-      request () {
-        let self = this
-        let i = 10
-        let map = ['MA==', 'MQo=', 'Mg==', 'Mw==', 'NA==', 'NQ==', 'Ng==', 'Nw==', 'OA==', 'OQ==']
-        while (i--) {
-          wepy.request({
-            url: 'https://www.madcoder.cn/tests/sleep.php?time=1&t=css&c=' + map[i] + '&i=' + i,
-            success: function (d) {
-              self.netrst += d.data + '.'
-              self.$apply()
-            }
-          })
-        }
-      },
-      counterEmit (...args) {
-        let $event = args[args.length - 1]
-        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
+        case 4:
+          console.log('in controlId 4.')
+          self.$redirect('/pages/orders')
+          break
       }
-    }
-
-    events = {
-      'index-emit': (...args) => {
-        let $event = args[args.length - 1]
-        console.log(`${this.$name} receive ${$event.name} from ${$event.source.$name}`)
-      }
-    }
-
-    onLoad() {
-      let self = this
-      this.$parent.getUserInfo(function (userInfo) {
-        if (userInfo) {
-          self.userInfo = userInfo
+    },
+    maptap (e) {
+      console.log('e:', e)
+    },
+    async regionchange (e) {
+      console.log('regionchange-e:', e)
+      this.mapCtx.getCenterLocation({
+        success: (res) => {
+          console.log('regionchange.res:', res)
+          // 在这里拿到新的坐标后，重新调用获取电桩list，并渲染到地图上
         }
-        self.normalTitle = '标题已被修改'
-
-        self.setTimeoutTitle = '标题三秒后会被修改'
-        setTimeout(() => {
-          self.setTimeoutTitle = '到三秒了'
-          self.$apply()
-        }, 3000)
-
-        self.$apply()
       })
     }
   }
+
+  async setMapByLocation () {
+    var self = this
+    var res = await wepy.getLocation()
+    if (res) {
+      console.log('getLocation:', res)
+      self.longitude = res.longitude
+      self.latitude = res.latitude
+      self.circles[0].latitude = res.latitude
+      self.circles[0].longitude = res.longitude
+      return res
+    }
+  }
+}
 </script>

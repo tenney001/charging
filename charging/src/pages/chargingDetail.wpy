@@ -1,0 +1,111 @@
+<style lang="less">
+  @import url(../weui.less);
+
+  .bg-img{
+    width: 750rpx;
+    height:700rpx;
+    background-color:#14b8ce;
+  }
+  .box1{
+    position: absolute;
+    top:0;
+    left: 0;
+    width: 750rpx;
+    height: 700rpx;
+    display: flex;
+    flex-direction: column;
+  }
+  .t{
+    padding: 0 20rpx;
+    color: #fff;
+  }
+  
+  .loading{margin:20px auto; width: 8em; height: 8em; position: relative;}
+  .progress{position: absolute; width: 7em; height:7em; background-color: #50dbd9; border-radius: 50%; left: .5em; top: .5em; line-height: 7em; text-align: center;}
+  .left{ border-radius: 8em 0 0 8em;width: 4em;height: 8em;overflow: hidden; position: relative; float: left;}
+  .right{ border-radius: 0 8em 8em 0;width: 4em;height: 8em;overflow: hidden; position: relative; float: left;}
+  .left-a{content:"";  position:absolute; display:block; width: 4em;height: 8em; background-color: white;border-radius: 8em 0 0 8em;background-color: #fff;transform-origin:right center;}
+  .right-a{ width: 4em;height: 8em; background-color: white;border-radius: 8em 0 0 8em;background-color: #fff;content:"";  position:absolute; display:block;   border-radius: 0 8em 8em 0; transform-origin:left center;}
+
+
+  .pt_t{
+    color:#fff;
+  }
+
+</style>
+
+<template>
+  <view class="container">
+    <view>
+      <view class="bg-img"></view>
+      <view class="box1">
+        <view class="t"><text>环球中心充电站</text></view>
+        <view class="t"><text>充电桩位：</text></view>
+        <view class="t"><text>开始充电时间：</text></view>
+        <view class="loading">
+          <view class="left"><view class="left-a" style="transform:rotateZ({{left}}deg);"></view></view>
+          <view class="right"><view class="right-a" style="transform:rotateZ({{right}}deg);"></view></view>
+          <view class="progress">
+            <view class="p_t"><text class="pt_t">{{percent}}%</text></view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view></view>
+    <view></view>
+    <view></view>
+    <view></view>
+  </view>
+  <button @tap="plus()">btn</button>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class ChargingDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '电桩详情'
+    }
+    data = {
+      percent: 0
+    }
+
+    computed = {
+      percent () {
+        if (this.percent > 100) {
+          return 0
+        } else {
+          return this.percent
+        }
+      },
+      left () {
+        if (this.percent * 3.6 <= 180) {
+          return 180
+        } else {
+          return this.percent * 3.6
+        }
+      },
+      right () {
+        if (this.percent * 3.6 <= 180) {
+          return 180 + this.percent * 3.6
+        } else {
+          return 360
+        }
+      }
+    }
+
+    methods = {
+      plus() {
+        this.percent ++
+      }
+    }
+
+    onShow () {
+      var self = this
+      setInterval(function () {
+        self.methods.plus.call(self)
+        self.$apply()
+      }, 100)
+    }
+  }
+</script>

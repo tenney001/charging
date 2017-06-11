@@ -1,0 +1,16 @@
+<style></style>
+<template>
+  <view>
+  <textarea>this page is orders.</textarea>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+
+  export default class Des extends wepy.page {
+    config = {
+      navigationBarTitleText: '订单'
+    }
+  }
+</script>
